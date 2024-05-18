@@ -2,7 +2,7 @@ import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -56,6 +56,39 @@ const InitialLayout = () => {
               <Ionicons size={24} name="arrow-back" color={Colors.dark} />
             </TouchableOpacity>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="login"
+        options={{
+          title: "",
+          headerBackTitle: "",
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
+          headerRight: () => (
+            <Link href={"/help"} asChild>
+              <TouchableOpacity>
+                <Ionicons
+                  size={34}
+                  name="help-circle-outline"
+                  color={Colors.dark}
+                />
+              </TouchableOpacity>
+            </Link>
+          ),
+
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="help"
+        options={{
+          title: "Help",
+          presentation: "modal",
         }}
       />
     </Stack>
