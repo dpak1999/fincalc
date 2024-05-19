@@ -1,9 +1,11 @@
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Colors from "@/constants/Colors";
 import RoundButton from "@/components/RoundButton";
 import Dropdown from "@/components/Dropdown";
 import { useBalanceStore } from "@/store/balanceStorage";
+import { defaultStyles } from "@/constants/Styles";
+import { Ionicons } from "@expo/vector-icons";
 
 const Home = () => {
   const { balance, runTransaction, clearTransactions, transactions } =
@@ -36,6 +38,38 @@ const Home = () => {
         />
         <RoundButton icon={"list"} text="Details" />
         <Dropdown />
+      </View>
+
+      <Text style={defaultStyles.sectionHeader}>Transactions</Text>
+      <View style={styles.transactions}>
+        {transactions.length === 0 && (
+          <Text style={{ padding: 14, color: Colors.gray }}>
+            No transactions yet
+          </Text>
+        )}
+
+        {transactions.map((t) => (
+          <View
+            key={t.id}
+            style={{ flexDirection: "row", alignItems: "center", gap: 16 }}
+          >
+            <View style={styles.circle}>
+              <Ionicons
+                name={t.amount > 0 ? "add" : "remove"}
+                size={24}
+                color={Colors.dark}
+              />
+            </View>
+
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontWeight: "400" }}>{t.title}</Text>
+              <Text style={{ color: Colors.gray, fontSize: 12 }}>
+                {t.date.toLocaleString()}
+              </Text>
+            </View>
+            <Text>{t.amount} INR</Text>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
