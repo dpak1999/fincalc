@@ -10,8 +10,9 @@ import {
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useSignIn } from "@clerk/clerk-expo";
 
 enum SignInType {
   Phone,
@@ -24,8 +25,34 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const keyboardOffset = Platform.OS === "ios" ? 90 : 0;
 
+  const router = useRouter();
+
+  const { signIn } = useSignIn();
+
   const onLogin = async (type: SignInType) => {
     if (type === SignInType.Phone) {
+      try {
+        const fullPhoneNumber = `+91${phoneNumber}`;
+        const response = await signIn?.create({ identifier: fullPhoneNumber });
+
+        const firstPhoneFactor: any = response?.supportedFirstFactors.find(
+          (f) => f.strategy === "phone_code"
+        );
+
+        const { phoneNumberId } = firstPhoneFactor;
+
+        await signIn?.prepareFirstFactor({
+          strategy: "phone_code",
+          phoneNumberId,
+        });
+
+        router.push({
+          pathname: "/verify/[phone]",
+          params: { phone: fullPhoneNumber, signin: "true" },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

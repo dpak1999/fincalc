@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -10,14 +11,30 @@ import {
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { useSignUp } from "@clerk/clerk-expo";
 
 const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const keyboardOffset = Platform.OS === "ios" ? 90 : 0;
 
+  const router = useRouter();
+  const { signUp } = useSignUp();
+
   const onSignup = async () => {
-    console.log("works signup");
+    const fullPhoneNumber = `+91${phoneNumber}`;
+
+    try {
+      await signUp?.create({ phoneNumber: fullPhoneNumber });
+      signUp?.preparePhoneNumberVerification();
+      router.push({
+        pathname: "/verify/[phone]",
+        params: { phone: fullPhoneNumber },
+      });
+    } catch (error) {
+      Alert.alert("", "Something went wrong. Please try again");
+      console.log(error, "signup");
+    }
   };
 
   return (
