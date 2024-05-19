@@ -7,10 +7,12 @@ import { useBalanceStore } from "@/store/balanceStorage";
 import { defaultStyles } from "@/constants/Styles";
 import { Ionicons } from "@expo/vector-icons";
 import WidgetList from "@/components/sortableList/WidgetsList";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const Home = () => {
   const { balance, runTransaction, clearTransactions, transactions } =
     useBalanceStore();
+  const headerHeight = useHeaderHeight();
 
   const onAddMoney = () => {
     runTransaction({
@@ -22,7 +24,12 @@ const Home = () => {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: Colors.background }}>
+    <ScrollView
+      style={{ backgroundColor: Colors.background }}
+      contentContainerStyle={{
+        paddingTop: headerHeight,
+      }}
+    >
       <View style={styles.account}>
         <View style={styles.row}>
           <Text style={styles.balance}>{balance()}</Text>
